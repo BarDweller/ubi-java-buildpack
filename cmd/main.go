@@ -3,7 +3,7 @@ package main
 import (
 	ubi8javabuildpack "github.com/paketo-community/ubi-java-buildpack"
 
-	"github.com/paketo-buildpacks/libpak"
+	libpak "github.com/paketo-buildpacks/libpak/v2"
 )
 
 func main() {

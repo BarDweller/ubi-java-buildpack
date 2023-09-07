@@ -3,7 +3,7 @@ package ubi8javabuildpack_test
 import (
 	"testing"
 
-	libcnb "github.com/buildpacks/libcnb"
+	libcnb "github.com/buildpacks/libcnb/v2"
 	ubi8javabuildpack "github.com/paketo-community/ubi-java-buildpack"
 
 	. "github.com/onsi/gomega"

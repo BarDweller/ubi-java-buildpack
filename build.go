@@ -1,14 +1,13 @@
 package ubi8javabuildpack
 
 import (
-	"fmt"
 	"os"
 	"strings"
 
-	libcnb "github.com/buildpacks/libcnb"
-	"github.com/paketo-buildpacks/libjvm"
-	libpak "github.com/paketo-buildpacks/libpak"
-	"github.com/paketo-buildpacks/libpak/bard"
+	libcnb "github.com/buildpacks/libcnb/v2"
+	libjvm "github.com/paketo-buildpacks/libjvm/v2"
+	libpak "github.com/paketo-buildpacks/libpak/v2"
+	"github.com/paketo-buildpacks/libpak/v2/log"
 )
 
 func Build(context libcnb.BuildContext) (libcnb.BuildResult, error) {
@@ -19,28 +18,23 @@ func Build(context libcnb.BuildContext) (libcnb.BuildResult, error) {
 	version := os.Getenv("UBI_JAVA_EXTENSION_VERSION")
 	helperstr := os.Getenv("UBI_JAVA_EXTENSION_HELPERS")
 
+	//only act if the version is set, otherwise we are a no-op.
 	if version != "" {
+		logger := log.NewPaketoLogger(context.Logger.DebugWriter())
+		logger.Title(context.Buildpack.Info.Name, context.Buildpack.Info.Version, context.Buildpack.Info.Homepage)
+
+		//recreate the various Contributable's that the extension could not use to create layers.
+		logger.Body(" - Helper buildpack contributing helpers '" + helperstr + "' for version " + version)
 		helpers := strings.Split(helperstr, ",")
-		h := libpak.NewHelperLayerContributor(context.Buildpack, helpers...)
-		h.Logger = bard.NewLogger(context.Logger.DebugWriter())
+		h := libpak.NewHelperLayerContributor(context.Buildpack, logger, helpers...)
+		logger.Body(" - Helper buildpack adding java security properties")
+		jsp := libjvm.NewJavaSecurityProperties(context.Buildpack.Info, logger)
 
-		h.Logger.Title(context.Buildpack.Info.Name, context.Buildpack.Info.Version, context.Buildpack.Info.Homepage)
-		h.Logger.Body(" - Helper buildpack processing helpers '" + helperstr + "' for version " + version)
-
-		l, err := libjvm.DefaultFlattenContributorFn(h, context)
-		if err != nil {
-			return result, fmt.Errorf("unable to contribute helper layer\n%w", err)
-		}
-		result.Layers = append(result.Layers, l)
-
-		h.Logger.Body(" - Helper buildpack adding java security properties")
-		jsp := libjvm.NewJavaSecurityProperties(context.Buildpack.Info)
-		jsp.Logger = h.Logger
-		l, err = libjvm.DefaultFlattenContributorFn(jsp, context)
-		if err != nil {
-			return result, fmt.Errorf("unable to contribute jsp layer\n%w", err)
-		}
-		result.Layers = append(result.Layers, l)
+		//use libpak to process the contributable's into layers, by invoking the buildfunc.
+		logger.Body(" - Helper buildpack creating layers")
+		return libpak.ContributableBuildFunc(func(context libcnb.BuildContext, result *libcnb.BuildResult) ([]libpak.Contributable, error) {
+			return []libpak.Contributable{h, jsp}, nil
+		})(context)
 	}
 
 	return result, nil
