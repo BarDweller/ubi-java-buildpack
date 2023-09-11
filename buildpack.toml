@@ -8,7 +8,7 @@ clear-env = false
 description = "This helper buildpack configures the java runtime installed via the ubi-java-extension"
 
 [metadata]
-  include-files = ["LICENSE", "README.md", "bin/build", "bin/detect", "bin/main", "buildpack.toml"]
+  include-files = ["LICENSE", "README.md", "bin/build", "bin/detect", "bin/main",  "bin/helper", "buildpack.toml"]
   pre-package = "scripts/build.sh"
 
   [[metadata.configurations]]
