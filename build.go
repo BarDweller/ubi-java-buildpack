@@ -1,6 +1,7 @@
 package ubi8javabuildpack
 
 import (
+	"fmt"
 	"os"
 	"strings"
 
@@ -12,6 +13,9 @@ import (
 
 func Build(context libcnb.BuildContext) (libcnb.BuildResult, error) {
 	result := libcnb.BuildResult{}
+
+	fmt.Println("OZDEBUG:")
+	fmt.Println(os.Environ())
 
 	logger := log.NewPaketoLogger(context.Logger.DebugWriter())
 	logger.Title(context.Buildpack.Info.Name, context.Buildpack.Info.Version, context.Buildpack.Info.Homepage)
