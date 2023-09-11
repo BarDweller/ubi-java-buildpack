@@ -11,8 +11,10 @@ import (
 )
 
 func Build(context libcnb.BuildContext) (libcnb.BuildResult, error) {
-
 	result := libcnb.BuildResult{}
+
+	logger := log.NewPaketoLogger(context.Logger.DebugWriter())
+	logger.Title(context.Buildpack.Info.Name, context.Buildpack.Info.Version, context.Buildpack.Info.Homepage)
 
 	//read the env vars set via the extension.
 	version := os.Getenv("BPI_UBI_JAVA_EXTENSION_VERSION")
@@ -20,9 +22,6 @@ func Build(context libcnb.BuildContext) (libcnb.BuildResult, error) {
 
 	//only act if the version is set, otherwise we are a no-op.
 	if version != "" {
-		logger := log.NewPaketoLogger(context.Logger.DebugWriter())
-		logger.Title(context.Buildpack.Info.Name, context.Buildpack.Info.Version, context.Buildpack.Info.Homepage)
-
 		//recreate the various Contributable's that the extension could not use to create layers.
 		logger.Body(" - Helper buildpack contributing helpers '" + helperstr + "' for version " + version)
 		helpers := strings.Split(helperstr, ",")
@@ -35,6 +34,8 @@ func Build(context libcnb.BuildContext) (libcnb.BuildResult, error) {
 		return libpak.ContributableBuildFunc(func(context libcnb.BuildContext, result *libcnb.BuildResult) ([]libpak.Contributable, error) {
 			return []libpak.Contributable{h, jsp}, nil
 		})(context)
+	} else {
+		logger.Body(" - Helper buildpack did not detect environment vars from extension. Disabling.")
 	}
 
 	return result, nil
