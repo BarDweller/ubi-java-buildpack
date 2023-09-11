@@ -36,6 +36,9 @@ func Build(context libcnb.BuildContext) (libcnb.BuildResult, error) {
 		})(context)
 	} else {
 		logger.Body(" - Helper buildpack did not detect environment vars from extension. Disabling.")
+		logger.Body("--> os.Env")
+		logger.Body(os.Environ())
+		logger.Body("<-- os.Env")
 	}
 
 	return result, nil
