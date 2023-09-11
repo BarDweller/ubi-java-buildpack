@@ -1,0 +1,121 @@
+api = "0.9"
+
+[buildpack]
+id = "paketo-community/ubi-java-buildpack"
+name = "Ubi Java Helper Buildpack"
+version = "0.0.1"
+description = "This helper buildpack configures the java runtime installed via the ubi-java-extension"
+
+[metadata]
+  include-files = ["LICENSE", "README.md", "bin/build", "bin/detect", "bin/main", "buildpack.toml"]
+  pre-package = "scripts/build.sh"
+
+  [[metadata.configurations]]
+    default = "0"
+    description = "the headroom in memory calculation"
+    launch = true
+    name = "BPL_JVM_HEAD_ROOM"
+
+  [[metadata.configurations]]
+    default = "35% of classes"
+    description = "the number of loaded classes in memory calculation"
+    launch = true
+    name = "BPL_JVM_LOADED_CLASS_COUNT"
+
+  [[metadata.configurations]]
+    default = "250"
+    description = "the number of threads in memory calculation"
+    launch = true
+    name = "BPL_JVM_THREAD_COUNT"
+
+  [[metadata.configurations]]
+    default = ""
+    description = "write heap dumps on error to this path"
+    launch = true
+    name = "BPL_HEAP_DUMP_PATH"
+
+  [[metadata.configurations]]
+    default = "true"
+    description = "enables Java Native Memory Tracking (NMT)"
+    launch = true
+    name = "BPL_JAVA_NMT_ENABLED"
+
+  [[metadata.configurations]]
+    default = "summary"
+    description = "configure level of NMT, summary or detail"
+    launch = true
+    name = "BPL_JAVA_NMT_LEVEL"
+
+  [[metadata.configurations]]
+    default = "false"
+    description = "enables Java Management Extensions (JMX)"
+    launch = true
+    name = "BPL_JMX_ENABLED"
+
+  [[metadata.configurations]]
+    default = "5000"
+    description = "configure the JMX port"
+    launch = true
+    name = "BPL_JMX_PORT"
+
+  [[metadata.configurations]]
+    default = "false"
+    description = "enables Java remote debugging support"
+    launch = true
+    name = "BPL_DEBUG_ENABLED"
+
+  [[metadata.configurations]]
+    default = "8000"
+    description = "configure the remote debugging port"
+    launch = true
+    name = "BPL_DEBUG_PORT"
+
+  [[metadata.configurations]]
+    default = "false"
+    description = "configure whether to suspend execution until a debugger has attached"
+    launch = true
+    name = "BPL_DEBUG_SUSPEND"
+
+  [[metadata.configurations]]
+    default = "false"
+    description = "enables Java Flight Recording (JFR)"
+    launch = true
+    name = "BPL_JFR_ENABLED"
+
+  [[metadata.configurations]]
+    default = ""
+    description = "configure custom Java Flight Recording (JFR) arguments"
+    launch = true
+    name = "BPL_JFR_ARGS"
+
+  [[metadata.configurations]]
+    build = true
+    default = "false"
+    description = "enables running jlink tool to generate custom JRE"
+    name = "BP_JVM_JLINK_ENABLED"
+
+  [[metadata.configurations]]
+    build = true
+    default = "--no-man-pages --no-header-files --strip-debug --compress=1"
+    description = "configure custom link arguments (--output must be omitted)"
+    name = "BP_JVM_JLINK_ARGS"
+
+  [[metadata.configurations]]
+    build = true
+    default = "17"
+    description = "the Java version"
+    name = "BP_JVM_VERSION"
+
+  [[metadata.configurations]]
+    build = true
+    default = "JRE"
+    description = "the JVM type - JDK or JRE"
+    name = "BP_JVM_TYPE"
+
+  [[metadata.configurations]]
+    description = "the JVM launch flags"
+    launch = true
+    name = "JAVA_TOOL_OPTIONS"
+
+[[stacks]]
+  id = "*"    

@@ -9,13 +9,6 @@ jobs:
         runs-on:
             - ubuntu-latest
         steps:
-            - name: Docker login gcr.io
-              if: ${{ (github.event_name != 'pull_request' || ! github.event.pull_request.head.repo.fork) && (github.actor != 'dependabot[bot]') }}
-              uses: docker/login-action@v2
-              with:
-                password: ${{ secrets.GCR_PUSH_BOT_JSON_KEY }}
-                registry: gcr.io
-                username: _json_key
             - name: Docker login docker.io
               if: ${{ (github.event_name != 'pull_request' || ! github.event.pull_request.head.repo.fork) && (github.actor != 'dependabot[bot]') }}
               uses: docker/login-action@v2
@@ -32,7 +25,7 @@ jobs:
 
                 set -euo pipefail
 
-                go install -ldflags="-s -w" github.com/paketo-buildpacks/libpak/cmd/create-package@${PAKETO_LIBPAK_COMMIT:=latest}
+                go install -ldflags="-s -w" github.com/paketo-buildpacks/libpak/v2/cmd/create-package@${PAKETO_LIBPAK_COMMIT:=latest}
               env:
                 PAKETO_LIBPAK_COMMIT: ${{ vars.PAKETO_LIBPAK_COMMIT }}
             - name: Install crane
@@ -217,7 +210,7 @@ jobs:
                 fi
               env:
                 EXTENSION: "false"
-                PACKAGES: docker.io/paketocommunity/ubi-java-buildpack gcr.io/paketocommunity/ubi-java-buildpack
+                PACKAGES: docker.io/bardweller/ubi-java-buildpack
                 PUBLISH: "true"
                 VERSION: ${{ steps.version.outputs.version }}
                 VERSION_MAJOR: ${{ steps.version.outputs.version-major }}
@@ -247,7 +240,7 @@ jobs:
             - if: ${{ false && true }}
               uses: docker://ghcr.io/buildpacks/actions/registry/request-add-entry:4.0.1
               with:
-                address: docker.io/paketocommunity/ubi-java-buildpack@${{ steps.package.outputs.digest }}
-                id: ""
+                address: docker.io/bardweller/ubi-java-buildpack@${{ steps.package.outputs.digest }}
+                id: paketo-community/ubi-java-buildpack
                 token: ${{ secrets.PAKETO_BOT_GITHUB_TOKEN }}
                 version: ${{ steps.version.outputs.version }}

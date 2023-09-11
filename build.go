@@ -15,8 +15,8 @@ func Build(context libcnb.BuildContext) (libcnb.BuildResult, error) {
 	result := libcnb.BuildResult{}
 
 	//read the env vars set via the extension.
-	version := os.Getenv("UBI_JAVA_EXTENSION_VERSION")
-	helperstr := os.Getenv("UBI_JAVA_EXTENSION_HELPERS")
+	version := os.Getenv("BPI_UBI_JAVA_EXTENSION_VERSION")
+	helperstr := os.Getenv("BPI_UBI_JAVA_EXTENSION_HELPERS")
 
 	//only act if the version is set, otherwise we are a no-op.
 	if version != "" {
