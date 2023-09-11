@@ -14,15 +14,21 @@ import (
 func Build(context libcnb.BuildContext) (libcnb.BuildResult, error) {
 	result := libcnb.BuildResult{}
 
-	fmt.Println("OZDEBUG:")
-	fmt.Println(os.Environ())
-
-	logger := log.NewPaketoLogger(context.Logger.DebugWriter())
+	logger := log.NewPaketoLogger(os.Stdout)
 	logger.Title(context.Buildpack.Info.Name, context.Buildpack.Info.Version, context.Buildpack.Info.Homepage)
 
 	//read the env vars set via the extension.
-	version := os.Getenv("BPI_UBI_JAVA_EXTENSION_VERSION")
-	helperstr := os.Getenv("BPI_UBI_JAVA_EXTENSION_HELPERS")
+	versionb, err := os.ReadFile("/bpi.paketo.ubi.java.version")
+	if err != nil {
+		return result, err
+	}
+	helperb, err := os.ReadFile("/bpi.paketo.ubi.java.helpers")
+	if err != nil {
+		return result, err
+	}
+
+	version := string(versionb)
+	helperstr := string(helperb)
 
 	//only act if the version is set, otherwise we are a no-op.
 	if version != "" {
@@ -39,10 +45,7 @@ func Build(context libcnb.BuildContext) (libcnb.BuildResult, error) {
 			return []libpak.Contributable{h, jsp}, nil
 		})(context)
 	} else {
-		logger.Body(" - Helper buildpack did not detect environment vars from extension. Disabling.")
-		logger.Body("--> os.Env")
-		logger.Body(os.Environ())
-		logger.Body("<-- os.Env")
+		logger.Body(" - Helper buildpack did not detect config from extension. Disabling.")
 	}
 
 	return result, nil
