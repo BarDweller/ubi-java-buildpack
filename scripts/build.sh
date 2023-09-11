@@ -5,7 +5,7 @@ set -euo pipefail
 readonly PROGDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly DIR="$(cd "${PROGDIR}/.." && pwd)"
 
-GOOS="linux" go build -ldflags='-s -w' -o bin/helper github.com/paketo-buildpacks/libjvm/cmd/helper
+GOOS="linux" go build -ldflags='-s -w' -o bin/helper github.com/paketo-buildpacks/libjvm/v2/cmd/helper
 GOOS="linux" go build -ldflags='-s -w' -o bin/main "${DIR}/cmd"
 
 if [ "${STRIP:-false}" != "false" ]; then
