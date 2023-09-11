@@ -4,6 +4,7 @@ api = "0.9"
 id = "paketo-community/ubi-java-buildpack"
 name = "Ubi Java Helper Buildpack"
 version = "0.0.1"
+clear-env = false
 description = "This helper buildpack configures the java runtime installed via the ubi-java-extension"
 
 [metadata]
