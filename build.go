@@ -1,7 +1,6 @@
 package ubi8javabuildpack
 
 import (
-	"fmt"
 	"os"
 	"strings"
 
