@@ -162,7 +162,7 @@ func (j JRE) Contribute(layer *libcnb.Layer) error {
 			return fmt.Errorf("unable to expand JRE\n%w", err)
 		}
 
-		ConfigureJRE(layer, j.Logger,
+		return ConfigureJRE(layer, j.Logger,
 			layer.Path,                              //java home
 			j.LayerContributor.Dependency.Version,   //java version
 			j.ApplicationPath,                       //app path
@@ -170,8 +170,6 @@ func (j JRE) Contribute(layer *libcnb.Layer) error {
 			libjvm.IsLaunchContribution(j.Metadata), //isLaunch
 			j.CertificateLoader,                     //certLoader
 			j.DistributionType)                      //jdk/jre
-
-		return nil
 	})
 }
 

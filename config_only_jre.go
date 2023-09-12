@@ -52,7 +52,7 @@ func (j ConfigOnlyJRE) Contribute(layer *libcnb.Layer) error {
 
 	return j.LayerContributor.Contribute(layer, func(layer *libcnb.Layer) error {
 		j.Logger.Body("Configuring installed JRE")
-		ConfigureJRE(layer, j.Logger,
+		return ConfigureJRE(layer, j.Logger,
 			layer.Path,          //java home
 			j.JavaVersion,       //java version
 			j.ApplicationPath,   //app path
@@ -60,8 +60,6 @@ func (j ConfigOnlyJRE) Contribute(layer *libcnb.Layer) error {
 			isLaunch,            //isLaunch
 			j.CertificateLoader, //certLoader
 			j.DistributionType)  //jdk/jre
-
-		return nil
 	})
 }
 
