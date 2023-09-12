@@ -39,7 +39,7 @@ type ConfigOnlyJRE struct {
 }
 
 func NewConfigOnlyJRE(logger log.Logger, info libcnb.BuildpackInfo, applicationPath string, javaVersion string, certificateLoader libjvm.CertificateLoader) (ConfigOnlyJRE, error) {
-	contributor := libpak.NewLayerContributor(name, info, libcnb.LayerTypes{Launch: isLaunch, Build: isBuild, Cache: isCache}, logger)
+	contributor := libpak.NewLayerContributor("Configuration for JRE", info, libcnb.LayerTypes{Launch: isLaunch, Build: isBuild, Cache: isCache}, logger)
 	return ConfigOnlyJRE{
 		ApplicationPath:  applicationPath,
 		JavaVersion:      javaVersion,
