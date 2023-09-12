@@ -27,7 +27,7 @@ import (
 const isBuild = false
 const isLaunch = true
 const isCache = false
-const name = "jre"
+const name = "ajre" //alphabetically must come before 'helper' and 'java-security-properties'.
 
 type ConfigOnlyJRE struct {
 	ApplicationPath   string
@@ -51,6 +51,7 @@ func NewConfigOnlyJRE(logger log.Logger, info libcnb.BuildpackInfo, applicationP
 func (j ConfigOnlyJRE) Contribute(layer *libcnb.Layer) error {
 
 	return j.LayerContributor.Contribute(layer, func(layer *libcnb.Layer) error {
+		j.Logger.Body("Configuring installed JRE")
 		ConfigureJRE(layer, j.Logger,
 			layer.Path,          //java home
 			j.JavaVersion,       //java version

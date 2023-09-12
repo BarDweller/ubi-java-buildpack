@@ -80,6 +80,9 @@ func ConfigureJRE(layer *libcnb.Layer, logger log.Logger,
 	isLaunch bool,
 	certLoader libjvm.CertificateLoader,
 	distType libjvm.DistributionType) error {
+
+	logger.Bodyf("Applying configuration for Java at %s", javaHome)
+
 	var cacertsPath string
 	if libjvm.IsBeforeJava9(javaVersion) && distType == libjvm.JDKType {
 		cacertsPath = filepath.Join(javaHome, "jre", "lib", "security", "cacerts")
@@ -99,10 +102,13 @@ func ConfigureJRE(layer *libcnb.Layer, logger log.Logger,
 	}
 
 	if isBuild {
+		logger.Body("Configuring for Build")
 		layer.BuildEnvironment.Default("JAVA_HOME", javaHome)
 	}
 
 	if isLaunch {
+		logger.Body("Configuring for Launch")
+
 		layer.LaunchEnvironment.Default("BPI_APPLICATION_PATH", appPath)
 		layer.LaunchEnvironment.Default("BPI_JVM_CACERTS", cacertsPath)
 
