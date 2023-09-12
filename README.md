@@ -6,10 +6,10 @@ Extensions are unable to manipulate layers within the app image, and paketo conf
 jvm's via app layers, so the ubi-java-extension is unable to install and configure the 
 jvm as it has no access to create layers. 
 
-Instead, the extension sets two env vars into the builder image that are detected by
+Instead, the extension creates two files into the builder image that are detected by
 this buildpack, and used to perform the configuration.
 
-The env vars are:
+The files are:
 
-- BPI_UBI_JAVA_EXTENSION_VERSION - conveys the version of java installed
-- BPI_UBI_JAVA_EXTENSION_HELPERS - conveys the helpers that would have been used to configure java
+- `/bpi.paketo.ubi.java.version` - conveys the version of java installed
+- `/bpi.paketo.ubi.java.helpers` - conveys the helpers that would have been used to configure java

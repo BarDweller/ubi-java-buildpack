@@ -26,25 +26,30 @@ func Build(context libcnb.BuildContext) (libcnb.BuildResult, error) {
 		return result, err
 	}
 
-	version := string(versionb)
-	helperstr := string(helperb)
+	version := strings.TrimSuffix(string(versionb), "\n")
+	helperstr := strings.TrimSuffix(string(helperb), "\n")
 
 	//only act if the version is set, otherwise we are a no-op.
 	if version != "" {
 		//recreate the various Contributable's that the extension could not use to create layers.
-		logger.Body(" - Helper buildpack contributing helpers '" + helperstr + "' for version " + version)
+		logger.Body("Helper buildpack configuring using '" + helperstr + "'  and java security properties for version " + version)
+
+		jre, err := NewConfigOnlyJRE(logger, context.Buildpack.Info, context.ApplicationPath, version, libjvm.NewCertificateLoader(logger))
+		if err != nil {
+			return result, err
+		}
+
 		helpers := strings.Split(helperstr, ",")
 		h := libpak.NewHelperLayerContributor(context.Buildpack, logger, helpers...)
-		logger.Body(" - Helper buildpack adding java security properties")
 		jsp := libjvm.NewJavaSecurityProperties(context.Buildpack.Info, logger)
 
 		//use libpak to process the contributable's into layers, by invoking the buildfunc.
-		logger.Body(" - Helper buildpack creating layers")
+		logger.Body("Initiating layer creation")
 		return libpak.ContributableBuildFunc(func(context libcnb.BuildContext, result *libcnb.BuildResult) ([]libpak.Contributable, error) {
-			return []libpak.Contributable{h, jsp}, nil
+			return []libpak.Contributable{jre, h, jsp}, nil
 		})(context)
 	} else {
-		logger.Body(" - Helper buildpack did not detect config from extension. Disabling.")
+		logger.Body("Helper buildpack did not detect config from extension. Disabling.")
 	}
 
 	return result, nil

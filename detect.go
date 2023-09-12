@@ -6,8 +6,7 @@ import (
 
 func Detect(context libcnb.DetectContext) (libcnb.DetectResult, error) {
 	return libcnb.DetectResult{
-		Pass: true,
-		Plans: []libcnb.BuildPlan{
-		},
+		Pass:  true,
+		Plans: []libcnb.BuildPlan{},
 	}, nil
 }
