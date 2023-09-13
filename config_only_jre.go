@@ -56,14 +56,16 @@ func (j ConfigOnlyJRE) Contribute(layer *libcnb.Layer) error {
 
 	return j.LayerContributor.Contribute(layer, func(layer *libcnb.Layer) error {
 		j.Logger.Body("Configuring installed JRE")
-		return ConfigureJRE(layer, j.Logger,
-			ubi8JrePath,         //java home
-			j.JavaVersion,       //java version
-			j.ApplicationPath,   //app path
-			isBuild,             //isBuild
-			isLaunch,            //isLaunch
-			j.CertificateLoader, //certLoader
-			j.DistributionType)  //jdk/jre
+		return ConfigureJRE(ConfigJREContext{
+			Layer:             layer,
+			Logger:            j.Logger,
+			JavaHome:          ubi8JrePath,
+			JavaVersion:       j.JavaVersion,
+			ApplicationPath:   j.ApplicationPath,
+			IsBuild:           isBuild,
+			IsLaunch:          isLaunch,
+			CertificateLoader: j.CertificateLoader,
+		})
 	})
 }
 
