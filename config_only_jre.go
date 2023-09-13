@@ -28,6 +28,7 @@ const isBuild = false
 const isLaunch = true
 const isCache = false
 const name = "ajre" //alphabetically must come before 'helper' and 'java-security-properties'.
+const ubi8JrePath = "/usr/lib/jvm/jre"
 
 type ConfigOnlyJRE struct {
 	ApplicationPath   string
@@ -39,12 +40,15 @@ type ConfigOnlyJRE struct {
 }
 
 func NewConfigOnlyJRE(logger log.Logger, info libcnb.BuildpackInfo, applicationPath string, javaVersion string, certificateLoader libjvm.CertificateLoader) (ConfigOnlyJRE, error) {
+	certLoader := libjvm.NewCertificateLoader()
 	contributor := libpak.NewLayerContributor("Configuration for JRE", info, libcnb.LayerTypes{Launch: isLaunch, Build: isBuild, Cache: isCache}, logger)
 	return ConfigOnlyJRE{
-		ApplicationPath:  applicationPath,
-		JavaVersion:      javaVersion,
-		LayerContributor: contributor,
-		Logger:           logger,
+		ApplicationPath:   applicationPath,
+		JavaVersion:       javaVersion,
+		CertificateLoader: certLoader,
+		DistributionType:  libjvm.JREType,
+		LayerContributor:  contributor,
+		Logger:            logger,
 	}, nil
 }
 
@@ -53,7 +57,7 @@ func (j ConfigOnlyJRE) Contribute(layer *libcnb.Layer) error {
 	return j.LayerContributor.Contribute(layer, func(layer *libcnb.Layer) error {
 		j.Logger.Body("Configuring installed JRE")
 		return ConfigureJRE(layer, j.Logger,
-			layer.Path,          //java home
+			ubi8JrePath,          //java home
 			j.JavaVersion,       //java version
 			j.ApplicationPath,   //app path
 			isBuild,             //isBuild
