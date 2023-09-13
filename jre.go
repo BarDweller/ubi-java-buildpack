@@ -87,7 +87,7 @@ type ConfigJREContext struct {
 
 func ConfigureJRE(configCtx ConfigJREContext) error {
 
-	configCtx.Logger.Bodyf("Applying configuration for Java at %s", configCtx.JavaHome)
+	configCtx.Logger.Bodyf("Applying configuration for Java %s at %s", configCtx.JavaVersion, configCtx.JavaHome)
 
 	// cacerts processing.
 	var cacertsPath string
@@ -110,6 +110,9 @@ func ConfigureJRE(configCtx ConfigJREContext) error {
 		} else {
 			configCtx.Logger.Bodyf("%s: The JVM cacerts entries cannot be loaded with Java 18+, for more information see: https://github.com/paketo-buildpacks/libjvm/issues/158", color.YellowString("Warning"))
 		}
+	} else {
+		//if we are skipping certs.. disable the runtime helper too.
+		configCtx.Layer.LaunchEnvironment.Default("BP_RUNTIME_CERT_BINDING_DISABLED", true)
 	}
 
 	if isBuild {
