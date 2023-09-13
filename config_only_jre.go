@@ -40,7 +40,7 @@ type ConfigOnlyJRE struct {
 }
 
 func NewConfigOnlyJRE(logger log.Logger, info libcnb.BuildpackInfo, applicationPath string, javaVersion string, certificateLoader libjvm.CertificateLoader) (ConfigOnlyJRE, error) {
-	certLoader := libjvm.NewCertificateLoader()
+	certLoader := libjvm.NewCertificateLoader(logger)
 	contributor := libpak.NewLayerContributor("Configuration for JRE", info, libcnb.LayerTypes{Launch: isLaunch, Build: isBuild, Cache: isCache}, logger)
 	return ConfigOnlyJRE{
 		ApplicationPath:   applicationPath,
@@ -57,7 +57,7 @@ func (j ConfigOnlyJRE) Contribute(layer *libcnb.Layer) error {
 	return j.LayerContributor.Contribute(layer, func(layer *libcnb.Layer) error {
 		j.Logger.Body("Configuring installed JRE")
 		return ConfigureJRE(layer, j.Logger,
-			ubi8JrePath,          //java home
+			ubi8JrePath,         //java home
 			j.JavaVersion,       //java version
 			j.ApplicationPath,   //app path
 			isBuild,             //isBuild
