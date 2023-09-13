@@ -124,7 +124,7 @@ func ConfigureJRE(configCtx ConfigJREContext) error {
 		configCtx.Layer.LaunchEnvironment.Default("BPI_JVM_CACERTS", cacertsPath)
 
 		//count the classes in the runtime (used by memory calculator)
-		if c, err := count.Classes(configCtx.JavaVersion); err != nil {
+		if c, err := count.Classes(configCtx.JavaHome); err != nil {
 			return fmt.Errorf("unable to count JVM classes\n%w", err)
 		} else {
 			configCtx.Layer.LaunchEnvironment.Default("BPI_JVM_CLASS_COUNT", c)
