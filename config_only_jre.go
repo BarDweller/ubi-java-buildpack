@@ -64,6 +64,7 @@ func (j ConfigOnlyJRE) Contribute(layer *libcnb.Layer) error {
 			ApplicationPath:   j.ApplicationPath,
 			IsBuild:           isBuild,
 			IsLaunch:          isLaunch,
+			SkipCerts:         true,
 			CertificateLoader: j.CertificateLoader,
 		})
 	})
