@@ -112,7 +112,7 @@ func ConfigureJRE(configCtx ConfigJREContext) error {
 		}
 	} else {
 		//if we are skipping certs.. disable the runtime helper too.
-		configCtx.Layer.LaunchEnvironment.Default("BP_RUNTIME_CERT_BINDING_DISABLED", true)
+		configCtx.Layer.BuildEnvironment.Default("BP_RUNTIME_CERT_BINDING_DISABLED", true)
 	}
 
 	if isBuild {
